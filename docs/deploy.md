@@ -69,4 +69,10 @@ hub).
 
 ##### Solution
 
-Use package.json for versioning. TODO
+Use tags and versions explicitly. I suggest using the `package.json` file
+as the master version number. You can use this command on your CI server
+to tag docker images appropriately.
+
+```
+docker build -t USER/REPO:$(cat package.json | grep version | head -1 | sed -e 's/version//g' -e 's/://g' -e 's/"//g' -e 's/,//g' -e 's/ //g') .
+```
