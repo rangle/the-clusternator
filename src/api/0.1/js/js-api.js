@@ -15,7 +15,7 @@ const PRIVATE_CHECKSUM = '.private-checksum';
 const DEFAULT_API = /\$DEFAULT_API/g;
 const HOST = /\$HOST/g;
 
-const Q = require('Q');
+const Q = require('q');
 const fs = require('fs');
 const path = require('path');
 const mkdirp = Q.nfbind(require('mkdirp'));
