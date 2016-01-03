@@ -11,7 +11,7 @@ var cn = rewire('../../src/clusternator-json'),
 /*global describe, it, expect, beforeEach, afterEach */
 /*eslint no-unused-expressions:0*/
 describe('clusternator.json handling', () => {
-  var project, other, oldGit, oldInq, mockGitResponse;
+  var project, other, oldGit, oldInq, mockGitResponse, workDir;
 
   function mockGit() {
     if (mockGitResponse instanceof Error) {
@@ -21,6 +21,7 @@ describe('clusternator.json handling', () => {
   }
 
   beforeEach(() => {
+    workDir = process.cwd();
     project = 'home/user/workspaces/rangle/the-clusternator';
     other = 'home/user/workspaces/rangle/some-project/src';
     oldGit = cn.__get__('git');
@@ -49,6 +50,7 @@ describe('clusternator.json handling', () => {
   });
 
   afterEach(() => {
+    process.chdir(workDir);
     mockFs.restore();
     cn.__set__('git', oldGit);
     cn.__set__('util.inquirerPrompt', oldInq);

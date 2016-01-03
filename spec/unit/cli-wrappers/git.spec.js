@@ -9,15 +9,17 @@ var git = rewire('../../../src/cli-wrappers/git'),
 /*global describe, it, expect, beforeEach, afterEach */
 /*eslint no-unused-expressions:0*/
 describe('Test git CLI Wrapper', () => {
-  var projectRoot = '/', cProc;
+  var projectRoot = '/', cProc, workDir;
 
   beforeEach(() => {
+    workDir = process.cwd();
     projectRoot = '/';
     cProc = git.__get__('cproc');
     git.__set__('cproc', {output: Q.resolve, stream: Q.resolve});
   });
 
   afterEach(() => {
+    process.chdir(workDir);
     git.__set__('cproc', cProc);
   });
 

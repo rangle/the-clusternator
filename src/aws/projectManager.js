@@ -1,6 +1,7 @@
 'use strict';
 
 const Subnet = require('./subnetManager');
+const iamWrap = require('./iam/iam');
 const Route = require('./routeTableManager');
 const Route53 = require('./route53Manager');
 const Acl = require('./aclManager');
@@ -11,11 +12,13 @@ const Deployment = require('./deploymentManager');
 const DynamoManager = require('./dynamoManager');
 const gpg = require('../cli-wrappers/gpg');
 const constants = require('../constants');
+const util = require('../util');
 const Q = require('q');
+const R = require('ramda');
 
 var Vpc = require('./vpcManager');
 
-function getProjectManager(ec2, ecs, awsRoute53, dynamoDB) {
+function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam) {
   var vpcId = null;
   var pullRequest;
   var cluster;
@@ -27,6 +30,12 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB) {
   var route;
   var subnet;
   var acl;
+
+  const iam = R.mapObjIndexed(iamAwsPartial, iamWrap);
+
+  function iamAwsPartial(fn) {
+    return R.partial(fn, { iam: util.makePromiseApi(awsIam) });
+  }
 
   function destroy(pid) {
     return ec2.describeProject(pid).then((list) => {
@@ -187,6 +196,7 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB) {
       deployment,
       pr: pullRequest,
       ec2: ec2mgr,
+      iam,
       initializeGithubWebhookToken
     };
   });

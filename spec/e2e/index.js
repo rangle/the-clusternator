@@ -36,6 +36,7 @@ module.exports = {
   task: require('./task.spec'),
   taskDefinition: require('./taskDefinition.spec'),
   vpc: require('./vpc.spec'),
+  iam: require('./iam.spec'),
   log: logOutput,
   error: logError,
   appDef: require('../../examples/node-mongo/appdef.json')

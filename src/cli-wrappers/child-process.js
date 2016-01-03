@@ -81,10 +81,7 @@ function output(command, args, opts) {
     if (+code) {
       d.reject(new Error(failString(command, args, code, stderr)));
     } else {
-      d.resolve({
-        stdout: stdout.trim(),
-        stderr
-      });
+      d.resolve(stdout.trim());
     }
   });
 
