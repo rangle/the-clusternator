@@ -1,3 +1,11 @@
 machine:
   node:
     version: 4.2.3
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - sudo apt-get install -y libffi-dev libssl-dev
+    - pip install requests[security]
+    - pip install awscli

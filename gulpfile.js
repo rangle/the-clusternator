@@ -1,7 +1,6 @@
 'use strict';
 
 var gulp = require('gulp'),
-  gcallback = require('gulp-callback'),
   babel = require('gulp-babel'),
   eslint = require('gulp-eslint'),
   mocha = require('gulp-mocha'),
@@ -36,34 +35,32 @@ gulp.task('watch-tests', function watch() {
   gulp.watch(jsPaths.concat(specPaths), ['test-unit']);
 });
 
-gulp.task('pre-test-unit', ['lint'], function preUnitTest() {
+gulp.task('pre-test-unit', function preUnitTest() {
   return gulp
     .src(jsPaths)
-    .pipe(istanbul())
+    .pipe(istanbul({
+      includeUntested: true
+    }))
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test-unit', ['pre-test-unit'], function testUnit() {
+gulp.task('test-unit', ['lint', 'pre-test-unit'], function testUnit() {
   return gulp
     .src(specPaths)
     .pipe(mocha())
-    .pipe(gcallback(function restoreFs() {
-      // inserted this to verify if it was why coverage isn't writing :/
-      require('mock-fs').restore();
-    }))
     .pipe(istanbul.writeReports({
       reporters: ['text', 'lcovonly', 'html', 'json', 'text-summary'],
       reportOpts: {
         dir: './coverage',
         lcov: {
-          dir: './coverage/lcovonly',
+          dir: 'coverage/lcovonly',
           file: 'lcov.info'
         },
         html: {
-          dir: './coverage/html'
+          dir: 'coverage/html'
         },
         json: {
-          dir: './coverage/json'
+          dir: 'coverage/json'
         }
       }
     }));

@@ -125,6 +125,30 @@ module.exports = (yargs) => {
       cn.readPrivate(y.argv.p).done();
     })
 
+    .command('cert-upload', 'Upload a new SSL certificate', (y) => {
+      y.demand('n')
+        .alias('n', 'name')
+        .describe('n', 'Unique Name to give the certificate')
+        .demand('p')
+        .alias('p', 'private-key')
+        .describe('p', 'Path to private key')
+        .demand('c')
+        .alias('c', 'certificate')
+        .describe('c', 'Path to signed certificate')
+        .demand('h')
+        .alias('h', 'chain')
+        .describe('h', 'Path to certificate chain')
+        .default('h', '');
+
+      cn.certUpload(y.argv.p, y.argv.c, y.argv.n, y.argv.h)
+        .fail(console.log)
+        .done();
+    })
+    .command('cert-delete', 'Destroy an uploaded SSL certificate')
+    .command('cert-list', 'List uploaded SSL certificates', () => cn
+      .certList()
+      .then(console.log))
+
     .command('private-checksum', 'Calculates the hash of .private, and ' +
       'writes it to .clusternator/.private-checksum', cn.privateChecksum)
     .command('private-diff', 'Exits 0 if there is no difference between ' +

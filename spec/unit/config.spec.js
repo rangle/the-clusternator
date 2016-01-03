@@ -15,21 +15,13 @@ describe('config provider', () => {
     });
   });
 
-  afterEach(() => {
-    mockFs.restore();
-  });
+  afterEach(() => mockFs.restore());
 
-  it('should return an object', () => {
-    expect(config()).to.be.ok;
-  });
+  it('should return an object', () =>  expect(config()).to.be.ok);
 
   it('should have an attribute (null or otherwise) called awsCredentials',
-    () => {
-    expect(config().awsCredentials).to.not.equal(undefined);
-  });
+    () => expect(config().awsCredentials).to.not.equal(undefined));
 
   it('should have an attribute (null or otherwise) called ' +
-    'user', () => {
-      expect(config().user).to.not.equal(undefined);
-    });
+    'user', () => expect(config().user).to.not.equal(undefined));
 });

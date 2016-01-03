@@ -12,6 +12,14 @@ const SHA_TAG = CLUSTERNATOR_PREFIX + DELIM + 'sha';
 const AWS_DEFAULT_EC2_AMI = 'ami-e2b1f988';
 const AWS_DEFAULT_EC2_TYPE = 't2.micro';
 const SSH_PUBLIC_PATH = 'ssh-public';
+const AWS_APIS = Object.freeze({
+  dynamodb: '2012-08-10',
+  ec2: '2015-10-01',
+  ecr: '2015-09-21',
+  ecs: '2014-11-13',
+  iam: '2010-05-08',
+  route53: '2013-04-01'
+});
 
 
 const constants = Object.freeze({
@@ -24,6 +32,7 @@ const constants = Object.freeze({
     4: 'debug',
     5: 'silly'
   }),
+  AWS_APIS,
   AWS_R53_ZONE_PREFIX: '/hostedzone/',
   AWS_DEFAULT_EC2_AMI,
   AWS_DEFAULT_EC2_TYPE,
