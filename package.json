@@ -35,7 +35,8 @@
     "staging": "NODE_ENV=staging; node ./server-init.js",
     "start": "node ./server-init.js",
     "test": "gulp test-unit",
-    "watch": "gulp watch"
+    "watch": "gulp watch",
+    "release": "git commit -am $npm_package_version && git tag $npm_package_version && git push && npm publish && git push --tags"
   },
   "homepage": "http://the-clusternator.rangle.io",
   "repository": {
