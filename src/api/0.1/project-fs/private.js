@@ -184,13 +184,8 @@ function addToIgnore(ignoreFile, privatePath) {
  * @returns {Q.Promise}
  */
 function makePrivate(passphrase) {
-  return clusternatorJson
-    .makePrivate(passphrase)
-    .then(() => {
-      util.info('Clusternator: Private files/directories encrypted');
-    })
-    .fail((err) => util
-      .error(`Clusternator: Failed to encrypt private: ${err.message}`));
+  return clusternatorJson.makePrivate(passphrase)
+    .then(() => util.info('Clusternator: Private files/directories encrypted'));
 }
 
 /**
@@ -198,15 +193,6 @@ function makePrivate(passphrase) {
  * @returns {Q.Promise}
  */
 function readPrivate(passphrase) {
-  return clusternatorJson.readPrivate(passphrase).then(() => {
-    util.info('Clusternator: Private files/directories un-encrypted');
-  })
-    .fail((err) => {
-      if (err.code === 'ENONENT') {
-        util.Error('Clusternator cannot find encrypted .private folder ' +
-          '(clusternator.tar.gz.asc');
-      } else {
-        util.error('Clusternator error reading file: ');
-      }
-    });
+  return clusternatorJson.readPrivate(passphrase)
+    .then(() => util.info('Clusternator: Private files un-encrypted'));
 }

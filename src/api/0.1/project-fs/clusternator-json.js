@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * This module manages a project's `clusternator.json`
  *
@@ -363,33 +364,29 @@ function readPrivate(passPhrase, root) {
  * @param {String} passPhrase
  * @returns {Q.Promise}
  */
-function makePrivate(passPhrase, root) {
-  return getConfig()
-    .then((config) => {
-      if (!config.private) {
-        throw new Error(
-          'Clusternator: No private assets marked in config file');
-      }
+function makePrivate(passphrase, root) {
+  return getConfig().then((config) => {
+    if (!config.private) {
+      throw new Error(
+        'Clusternator: No private assets marked in config file');
+    }
 
-      function makePrivateFromRoot(root) {
-        const tarFile = path.join(root, CLUSTERNATOR_TAR);
+    function makePrivateFromRoot(root) {
+      const tarFile = path.join(root, CLUSTERNATOR_TAR);
+      return fs.assertAccessible(config.private)
+        .then(() => tar.ball(tarFile, config.private))
+        .then(() => gpg.encryptFile(passphrase, tarFile))
+        .then(() => Q
+          .allSettled(
+            [config.private].concat([rimraf(tarFile)])));
+    }
 
-        return tar
-          .ball(tarFile, config.private)
-          .then(() => gpg
-            .encryptFile(passPhrase, tarFile))
-          .then(() => Q
-            .allSettled(
-              [config.private]
-                .concat([rimraf(tarFile)])));
-      }
-
-      if (root) {
-        return makePrivateFromRoot(root);
-      }
-      return fs.findProjectRoot()
-        .then(makePrivateFromRoot);
-    });
+    if (root) {
+      return makePrivateFromRoot(root);
+    }
+    return fs.findProjectRoot()
+      .then(makePrivateFromRoot);
+  });
 }
 
 /**

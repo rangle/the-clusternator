@@ -14,5 +14,5 @@ const API = USER ?
 
 const yargs = require('yargs');
 
-require(`../lib/api/${API}/cli/cli-api`)(yargs);
-
+const cli = require(`../lib/api/${API}/cli/cli-api`);
+cli.configure(yargs);

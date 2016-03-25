@@ -36,7 +36,8 @@ module.exports = {
   safeParse,
   isObject,
   deepFreeze,
-  partial
+  partial,
+  cliErr
 };
 
 /**
@@ -374,3 +375,40 @@ function makeRetryPromiseFunction(promiseReturningFunction, retryCount, delay,
   return promiseToRetry;
 }
 
+/**
+ * Intended to handle errors at the CLI level.
+ *
+ * Pretty-prints messages for specific error codes and decides whether to
+ * exit with 0 or 1.
+ *
+ * @param {string} operationDescription Describes what's being done in the CLI.
+ * @param {codeMap} maps error codes to messages.
+ *
+ * If codeMap is omitted, or doesn't match an actual error, error.message will
+ * be logged instead.
+ *
+ * Example:
+ *
+ * .fail(cliErr('Doing something with clusternator', {
+ *   ENOENT: { msg: 'something not found', code: 1 },
+ *   EACCES: { msg: 'no big deal' }
+ * }));
+ */
+function cliErr(
+  operationDescription,
+  codeMap) {
+
+  return function(error) {
+    const info = codeMap[error.code];
+    const code = info ? info.code : 1;
+
+    if (info) {
+      winston.info(operationDescription + ':', info.msg);
+    }
+    else {
+      winston.error(operationDescription + ':', error);
+    }
+
+    process.exit(code);
+  };
+}
