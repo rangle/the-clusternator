@@ -20,6 +20,7 @@ const write = Q.nbind(fs.writeFile, fs);
 const chmod = Q.nbind(fs.chmod, fs);
 const ls = Q.nbind(fs.readdir, fs);
 const unlink = Q.nbind(fs.unlink, fs);
+const stat = Q.nbind(fs.stat, fs);
 
 module.exports = {
   findProjectRoot,
@@ -34,6 +35,7 @@ module.exports = {
   ls,
   unlink,
   path,
+  assertAccessible,
   helpers: {
     parent
   }
@@ -103,25 +105,21 @@ function loadCertificateFiles(privateKey, certificate, chain) {
  */
 function findProjectRoot(cwd) {
   cwd = cwd || process.cwd();
+  return ls(cwd)
+    .then((files) => {
+      const index = files.indexOf(VCS_DIR);
+      if (index === -1) {
+        const parentPath = parent(cwd);
+        if (!parentPath) {
+          throw new Error('Clusternator: No Version Control Folder Found');
+        }
 
-  const d = Q.defer();
-
-  ls(cwd).then((files) => {
-    const index = files.indexOf(VCS_DIR);
-    if (index === -1) {
-      const parentPath = parent(cwd);
-      if (!parentPath) {
-        d.reject(new Error('Clusternator: No Version Control Folder Found'));
-        return;
+        return findProjectRoot(parentPath);
+      } else {
+        process.chdir(cwd);
+        return cwd;
       }
-      return findProjectRoot(parentPath).then(d.resolve, d.reject);
-    } else {
-      process.chdir(cwd);
-      d.resolve(cwd);
-    }
-  }, d.reject);
-
-  return d.promise;
+    });
 }
 
 /**
@@ -136,6 +134,14 @@ function parent(somePath) {
   }
   splits.pop();
   return root + splits.join(path.sep);
+}
+
+/**
+ * Given a file or folder, checks that it exists and can be read.
+ * Throws an error otherwise.
+ */
+function assertAccessible(fileOrFolder) {
+  return stat(fileOrFolder);
 }
 
 function identity(obj) {
