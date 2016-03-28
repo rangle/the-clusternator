@@ -1,6 +1,7 @@
 'use strict';
 
 const filter = require('./ec2-filter');
+const constants = require('../../constants');
 
 module.exports = {
   findProject: findProjectVPC,
@@ -105,7 +106,7 @@ function list(aws) {
 function findProjectTag(projectId, list) {
 
   function promiseToFindProjectTag() {
-    var vpc = null;
+    let vpc = null;
     list.Vpcs.forEach(function (vDesc) {
       vDesc.Tags.forEach(function (tag) {
         if (tag.Key !== constants.PROJECT_TAG) {
@@ -130,9 +131,9 @@ function findProjectTag(projectId, list) {
 function findMasterVPC(list) {
 
   function promiseToFindMasterVPC() {
-    var vpc = null;
+    let vpc = null;
     list.Vpcs.forEach(function (vDesc) {
-      var foundTag = false;
+      let foundTag = false;
       vDesc.Tags.forEach(function (tag) {
         if (tag.Key === constants.PROJECT_TAG) {
           foundTag = true;
@@ -152,7 +153,7 @@ function findProjectVPC(projectId) {
 
   function promiseToFindProjectVPC() {
     return describe().then(function (list) {
-      var vpc = findProjectTag(projectId, list);
+      let vpc = findProjectTag(projectId, list);
       if (vpc) {
         return vpc;
       }
@@ -164,5 +165,5 @@ function findProjectVPC(projectId) {
     });
   }
 
-  return promiseToFindProjectVPC
+  return promiseToFindProjectVPC;
 }
