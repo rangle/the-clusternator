@@ -1,13 +1,13 @@
 'use strict';
 
+const R = require('ramda');
+
 const filter = require('./ec2-filter');
 const constants = require('../../constants');
 
 module.exports = {
-  findProject: findProjectVPC,
   helpers: {
     findProjectTag: findProjectTag,
-    findProjectVPC: findProjectVPC,
     findMasterVPC: findMasterVPC
   },
   create,
@@ -106,18 +106,12 @@ function list(aws) {
 function findProjectTag(projectId, list) {
 
   function promiseToFindProjectTag() {
-    let vpc = null;
-    list.Vpcs.forEach(function (vDesc) {
-      vDesc.Tags.forEach(function (tag) {
-        if (tag.Key !== constants.PROJECT_TAG) {
-          return;
-        }
-        if (tag.Value === projectId) {
-          vpc = vDesc;
-        }
-      });
-    });
-    return vpc;
+    return R.find((vDesc) => (
+      R.any(R.allPass([
+        R.propEq('Key', constants.PROJECT_TAG),
+        R.propEq('Value', projectId)
+      ]))(vDesc.Tags)
+    ))(list.Vpcs) || null;
   }
 
   return promiseToFindProjectTag;
@@ -131,39 +125,10 @@ function findProjectTag(projectId, list) {
 function findMasterVPC(list) {
 
   function promiseToFindMasterVPC() {
-    let vpc = null;
-    list.Vpcs.forEach(function (vDesc) {
-      let foundTag = false;
-      vDesc.Tags.forEach(function (tag) {
-        if (tag.Key === constants.PROJECT_TAG) {
-          foundTag = true;
-        }
-      });
-      if (!foundTag) {
-        vpc = vDesc;
-      }
-    });
-    return vpc;
+    return R.find((vDesc) => (
+      R.none(R.propEq('Key', constants.PROJECT_TAG))(vDesc.Tags)
+    ))(list.Vpcs) || null;
   }
 
   return promiseToFindMasterVPC;
-}
-
-function findProjectVPC(projectId) {
-
-  function promiseToFindProjectVPC() {
-    return describe().then(function (list) {
-      let vpc = findProjectTag(projectId, list);
-      if (vpc) {
-        return vpc;
-      }
-      vpc = findMasterVPC(list);
-      if (vpc) {
-        return vpc;
-      }
-      throw new Error('No Clusternator VPCs found');
-    });
-  }
-
-  return promiseToFindProjectVPC;
 }

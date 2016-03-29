@@ -3,6 +3,7 @@ const rewire = require('rewire');
 
 const vpc = rewire('./vpc');
 const C = require('../../chai');
+const constants = require('../../constants');
 
 const aws = {};
 
@@ -55,6 +56,58 @@ describe('AWS: EC2: VPC', () => {
             C.getFail(done)
           );
     });
+  });
+
+  describe('findProjectTag function', () => {
+    it('should return null if given a list without a clusternator project tag',
+      () => {
+      expect(vpc.helpers.findProjectTag('id', {
+        Vpcs: [{
+          Tags: [{
+            Key: 'hahah',
+            Value: 'not found'
+          }]
+        }]
+      })()).to.be['null'];
+    });
+
+    it('should return truthy if given a list with a clusternator project tag',
+      () => {
+      expect(vpc.helpers.findProjectTag('id', {
+        Vpcs: [{
+          Tags: [{
+            Key: constants.PROJECT_TAG,
+            Value: 'id'
+          }]
+        }]
+      })()).to.be.ok;
+    });
+
+    describe('findMasterVPC function', () => {
+    it('should return truthy if given a list without a clusternator ' +
+        'project tag', () => {
+      expect(vpc.helpers.findMasterVPC({
+        Vpcs: [{
+          Tags: [{
+            Key: 'I have no tags',
+            Value: 'id'
+          }]
+        }]
+      })()).to.be.ok;
+    });
+
+    it('should return null if given a list with a clusternator ' +
+        'project tag', () => {
+      expect(vpc.helpers.findMasterVPC({
+        Vpcs: [{
+          Tags: [{
+            Key: constants.PROJECT_TAG,
+            Value: 'id'
+          }]
+        }]
+      })()).to.be['null'];
+    });
+    })
   });
 
 });
