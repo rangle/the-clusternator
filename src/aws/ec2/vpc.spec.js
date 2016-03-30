@@ -98,16 +98,16 @@ describe('AWS: EC2: VPC', () => {
 
     it('should return null if given a list with a clusternator ' +
         'project tag', () => {
-      expect(vpc.helpers.findMasterVPC({
-        Vpcs: [{
-          Tags: [{
-            Key: constants.PROJECT_TAG,
-            Value: 'id'
+        expect(vpc.helpers.findMasterVPC({
+          Vpcs: [{
+            Tags: [{
+              Key: constants.PROJECT_TAG,
+              Value: 'id'
+            }]
           }]
-        }]
-      })()).to.be['null'];
+        })()).to.be['null'];
+      });
     });
-    })
   });
 
 });

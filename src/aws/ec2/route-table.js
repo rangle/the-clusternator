@@ -1,6 +1,7 @@
 'use strict';
 
 const filter = require('./ec2-filter');
+const constants = require('../../constants');
 
 module.exports = {
   create,
@@ -107,6 +108,6 @@ function findDefault(aws) {
       return theRouteDesc;
     }
 
-    throw new Error('No Clusternator Route For VPC: ' + vpcId);
+    throw new Error('No Clusternator Route For VPC: ' + aws.vpcId);
   });
 }

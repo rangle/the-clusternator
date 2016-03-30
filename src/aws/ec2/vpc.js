@@ -68,22 +68,6 @@ function destroy(aws, vpcId) {
 }
 
 /**
- * @param {Object} el
- * @returns {string}
- */
-function mapDescription(el) {
-  return el.VpcId;
-}
-
-/**
- * @param {Array} descriptions
- * @returns {Array}
- */
-function mapDescribeToVpcIds(descriptions) {
-  return descriptions.map(mapDescription);
-}
-
-/**
  * @param {AwsWrapper} aws
  * @returns {function(): Promise<string[]>}
  */
@@ -91,7 +75,7 @@ function list(aws) {
 
   function promiseToList() {
     return describe(aws)()
-      .then((result) => mapDescribeToVpcIds(result.Vpcs));
+      .then((result) => R.map(R.prop('VpcId'), result.Vpcs));
   }
 
   return promiseToList;
