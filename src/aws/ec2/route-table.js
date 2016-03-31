@@ -98,16 +98,20 @@ function list(aws) {
  * @returns {function(): Promise<Object>}
  */
 function findDefault(aws) {
-  return describe(aws)().then((routes) => {
+  function promiseToFindDefault() {
+    return describe(aws)().then((routes) => {
 
-    let theRouteDesc = routes.find((rDesc) => (
-      rDesc.Tags.some((tag) => tag.Key === constants.CLUSTERNATOR_TAG)
-    ));
+      let theRouteDesc = routes.find((rDesc) => (
+        rDesc.Tags.some((tag) => tag.Key === constants.CLUSTERNATOR_TAG)
+      ));
 
-    if (theRouteDesc) {
-      return theRouteDesc;
-    }
+      if (theRouteDesc) {
+        return theRouteDesc;
+      }
 
-    throw new Error('No Clusternator Route For VPC: ' + aws.vpcId);
-  });
+      throw new Error('No Clusternator Route For VPC: ' + aws.vpcId);
+    });
+  }
+
+  return promiseToFindDefault;
 }
