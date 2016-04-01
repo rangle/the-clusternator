@@ -3,9 +3,13 @@
 const R = require('ramda');
 
 const filter = require('./ec2-filter');
+const tag = require('./ec2-tag');
 const constants = require('../../constants');
+const awsUtil = require('../aws-util');
+const CIDR_BLOCK = require('../aws-constants').CIDR_BLOCK;
 
 module.exports = {
+  bindAws,
   helpers: {
     findProjectTag: findProjectTag,
     findMasterVPC: findMasterVPC
@@ -15,6 +19,14 @@ module.exports = {
   destroy,
   list
 };
+
+/**
+ * @param {AwsWrapper} aws
+ * @returns {Object} this API bound to
+ */
+function bindAws(aws) {
+  return awsUtil.bindAws(aws, module.exports);
+}
 
 /**
  * @param {AwsWrapper} aws
@@ -37,15 +49,19 @@ function describe(aws) {
  * @param {string} cidrBlock
  * @returns {function(): Promise<object>}
  */
-function create(aws, cidrBlock) {
+function create(aws) {
 
   function promiseToCreate() {
     return aws.ec2
       .createVpc({
         DryRun: false,
-        CidrBlock: cidrBlock
+        CidrBlock: CIDR_BLOCK
       })
-      .then((result) => result.Vpc);
+      .then((result) => result.Vpc)
+      .then((vpc) => tag
+        .tag(aws, [vpc.VpcId], [tag.createClusternator()])()
+        .then(() => vpc)
+      );
   }
 
   return promiseToCreate;

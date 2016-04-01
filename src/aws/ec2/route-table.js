@@ -1,14 +1,25 @@
 'use strict';
 
 const filter = require('./ec2-filter');
+const tag = require('./ec2-tag');
 const constants = require('../../constants');
+const awsUtil = require('../aws-util');
 
 module.exports = {
+  bindAws,
   create,
   describe,
   destroy,
   list
 };
+
+/**
+ * @param {AwsWrapper} aws
+ * @returns {Object} this API bound to
+ */
+function bindAws(aws) {
+  return awsUtil.bindAws(aws, module.exports);
+}
 
 /**
  * @param {AwsWrapper} aws
@@ -41,7 +52,11 @@ function create(aws) {
         DryRun: false,
         VpcId: aws.vpcId
       })
-      .then((result) => result.RouteTable);
+      .then((result) => result.RouteTable)
+      .then((routeTable) => tag
+        .tag(aws, [routeTable.RouteTableId], [tag.createClusternator()])()
+        .then(() => routeTable)
+      );
   }
 
   return promiseToCreate;

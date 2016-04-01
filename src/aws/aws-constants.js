@@ -29,7 +29,8 @@ const EXPORTS = {
   AWS_RETRY_DELAY: 1500,
   AWS_RETRY_LIMIT: 3,
   AWS_RETRY_MULTIPLIER: 3,
-  ALT_TAG: '-alt'
+  ALT_TAG: '-alt',
+  CIDR_BLOCK: '10.0.0.0/16'
 };
 
 module.exports = util.deepFreeze(EXPORTS);
