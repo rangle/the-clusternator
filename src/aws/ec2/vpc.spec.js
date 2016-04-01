@@ -13,7 +13,8 @@ function initData() {
       Vpcs: [{ VpcId: 'vpcId' }]
     }),
     createVpc: () => Q.resolve({Vpc: true}),
-    deleteVpc: () => Q.resolve(true)
+    deleteVpc: () => Q.resolve(true),
+    createTags: () => Q.resolve(true)
   };
 }
 
@@ -24,7 +25,7 @@ describe('AWS: EC2: VPC', () => {
 
   describe('create function', () => {
     it('should call ec2.createVpc', (done) => {
-      vpc.create(aws, 'cidrBlock')()
+      vpc.create(aws)()
         .then((r) => C
           .check(done, () => expect(r).to.be.ok), C.getFail(done));
     });

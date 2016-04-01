@@ -13,7 +13,8 @@ function initData() {
       RouteTables: [{ RouteTableId: 'routeTableId' }]
     }),
     createRouteTable: () => Q.resolve({RouteTable: true}),
-    deleteRouteTable: () => Q.resolve(true)
+    deleteRouteTable: () => Q.resolve(true),
+    createTags: () => Q.resolve(true)
   };
 }
 
