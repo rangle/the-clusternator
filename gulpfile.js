@@ -12,7 +12,7 @@ var spawn = require('child_process').spawn;
 
 var jsPaths = ['src/**/*.js', 'src/*.js'];
 var cliPath = ['bin-src/**/*.js'];
-var specPaths = ['src/aws/ec2/vpc.spec.js', 'src/aws/ec2/route-table.spec.js'];
+var specPaths = ['src/**/*.spec.js'];
 
 gulp.task('default', ['transpile']);
 gulp.task('test', ['test-unit']);
@@ -101,34 +101,33 @@ gulp.task('pre-test-unit', function preUnitTest() {
 /**
  * lints then runs the mocha unit tests
  */
-// gulp.task('test-unit', ['lint', 'pre-test-unit'], function testUnit() {
-gulp.task('test-unit', function testUnit() {
+gulp.task('test-unit', ['lint', 'pre-test-unit'], function testUnit() {
   return gulp
     .src(specPaths)
     .pipe(mocha())
-    // .pipe(istanbul.writeReports({
-    //   reporters: ['text', 'lcovonly', 'html', 'json', 'text-summary'],
-    //   reportOpts: {
-    //     dir: './coverage',
-    //     lcov: {
-    //       dir: 'coverage/lcovonly',
-    //       file: 'lcov.info'
-    //     },
-    //     html: {
-    //       dir: 'coverage/html'
-    //     },
-    //     json: {
-    //       dir: 'coverage/json'
-    //     }
-    //   }
-    // }))
-    // .pipe(istanbul.enforceThresholds({ thresholds: {
-    //   global: {
-    //     statements: 70,
-    //     branches: 45
-    //   }
-    // } }))
-    ;
+    .pipe(istanbul.writeReports({
+      reporters: ['text', 'lcovonly', 'html', 'json', 'text-summary'],
+      reportOpts: {
+        dir: './coverage',
+        lcov: {
+          dir: 'coverage/lcovonly',
+          file: 'lcov.info'
+        },
+        html: {
+          dir: 'coverage/html'
+        },
+        json: {
+          dir: 'coverage/json'
+        }
+      }
+    }))
+    .pipe(istanbul.enforceThresholds({ thresholds: {
+      global: {
+        statements: 70,
+        branches: 45
+      }
+    } }))
+    .pipe(exit());
 });
 
 /**
