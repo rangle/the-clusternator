@@ -33,7 +33,7 @@ main();
 
 function main() {
   const config = getConfig();
-  const privatePath = path.normalize('../' + config.private);
+  const privatePath = path.normalize(__dirname + '/../' + config.private);
   const awsConfig = getAwsConfig(privatePath);
   const registryId = awsConfig.registryId;
   const region = awsConfig.region;
@@ -64,7 +64,7 @@ function main() {
 
 function ls(path) {
   return new Promise((resolve, reject) => {
-    fs.readdir(path, 'utf8', (err, data) => {
+    fs.readdir(path, (err, data) => {
       if (err) {
         reject(err);
       } else {
