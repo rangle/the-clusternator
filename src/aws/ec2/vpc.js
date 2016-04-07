@@ -4,9 +4,11 @@ const R = require('ramda');
 
 const filter = require('./ec2-filter');
 const tag = require('./ec2-tag');
+const awsConstants = require('../aws-constants');
 const constants = require('../../constants');
 const awsUtil = require('../aws-util');
 const CIDR_BLOCK = require('../aws-constants').CIDR_BLOCK;
+const util = require('../../util');
 
 module.exports = {
   bindAws,
@@ -36,7 +38,6 @@ function describe(aws) {
 
   function promiseToDescribe() {
     return aws.ec2.describeVpcs({
-      DryRun: false,
       Filters: [filter.createClusternator()]
     });
   }
@@ -46,22 +47,24 @@ function describe(aws) {
 
 /**
  * @param {AwsWrapper} aws
- * @param {string} cidrBlock
  * @returns {function(): Promise<object>}
  */
 function create(aws) {
 
   function promiseToCreate() {
-    return aws.ec2
-      .createVpc({
-        DryRun: false,
-        CidrBlock: CIDR_BLOCK
-      })
-      .then((result) => result.Vpc)
-      .then((vpc) => tag
-        .tag(aws, [vpc.VpcId], [tag.createClusternator()])()
-        .then(() => vpc)
-      );
+    return describe(aws)()
+      .then((result) => result.Vpcs && result.Vpcs.length ?
+        result.Vpcs[0] :
+        aws.ec2.createVpc({ CidrBlock: CIDR_BLOCK })
+          .then((result) => result.Vpc)
+          .then((vpc) => util.makeRetryPromiseFunction(tag
+            .tag(aws, [vpc.VpcId], [tag.createClusternator()]),
+            awsConstants.AWS_RETRY_LIMIT,
+            awsConstants.AWS_RETRY_DELAY,
+            awsConstants.AWS_RETRY_MULTIPLIER,
+            null,
+            'vpc-create-tag')()
+            .then(() => vpc)));
   }
 
   return promiseToCreate;
@@ -71,13 +74,20 @@ function create(aws) {
  * @param {AwsWrapper} aws
  * @param {string} vpcId
  * @returns {function(): Promise.<string>}
+ * @throws {TypeError}
  */
 function destroy(aws, vpcId) {
+  if (!vpcId) {
+    throw new TypeError('vpc.destroy requires vpcId');
+  }
 
   function promiseToDestroy() {
-    return aws.ec2
-      .deleteVpc({VpcId: vpcId})
-      .then(() => 'deleted');
+    return list(aws)()
+      .then((results) => results.indexOf(vpcId) === -1 ?
+        'already deleted' :
+        aws.ec2
+          .deleteVpc({VpcId: vpcId})
+          .then(() => 'deleted'));
   }
 
   return promiseToDestroy;

@@ -26,10 +26,18 @@ describe('AWS: EC2: VPC', () => {
   beforeEach(initData);
 
   describe('create function', () => {
-    it('should call ec2.createVpc', (done) => {
+    it('should resolve the existing vpc if it exists', (done) => {
       vpc.create(aws)()
         .then((r) => C
-          .check(done, () => expect(r).to.be.ok), C.getFail(done));
+          .check(done, () => expect(r.VpcId).to.equal('vpcId')), 
+          C.getFail(done));
+    });
+    
+    it('should call ec2.createVpc if there is no vpc', (done) => {
+      aws.ec2.describeVpcs = () => Q.resolve({ Vpcs: [] });
+      vpc.create(aws)()
+        .then((r) => C
+          .check(done, () => expect(r).to.equal(true)), C.getFail(done));
     });
   });
 
@@ -42,10 +50,22 @@ describe('AWS: EC2: VPC', () => {
   });
 
   describe('destroy function', () => {
-    it('should call ec2.deleteVpc', (done) => {
-      vpc.describe(aws, 'vpcId')()
+    it('should throw without a vpcId', () => {
+      expect(() => vpc.destroy(aws)).to.throw(TypeError);
+    });
+    
+    it('should resolve "already deleted" if the vpcId is not found', (done) => {
+      vpc.destroy(aws, 'vpcIdasdfads')()
         .then((r) => C
-          .check(done, () => expect(r).to.be.ok), C.getFail(done));
+          .check(done, () => expect(r).to.equal('already deleted')), 
+          C.getFail(done));
+    });
+    
+    it('should resolve "deleted" if it has to delete', (done) => {
+      vpc.destroy(aws, 'vpcId')()
+        .then((r) => C
+          .check(done, () => expect(r).to.equal('deleted')),
+          C.getFail(done));
     });
   });
 
@@ -110,6 +130,16 @@ describe('AWS: EC2: VPC', () => {
           }]
         })()).to.be['null'];
       });
+    });
+  });
+
+  describe('bindAws function', () => {
+    it('should partially apply aws to API', (done) => {
+      const vbound = vpc.bindAws(aws);
+      vbound.create()()
+        .then((r) => C
+          .check(done, () => expect(r.VpcId).to.equal('vpcId')),
+          C.getFail(done));
     });
   });
 });
