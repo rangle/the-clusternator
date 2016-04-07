@@ -1,3 +1,5 @@
+'use strict';
+
 const Q = require('q');
 const rewire = require('rewire');
 
@@ -24,11 +26,21 @@ describe('AWS: EC2: Route Tables', () => {
   beforeEach(initData);
 
   describe('create function', () => {
-    it('should call ec2.createRouteTable', (done) => {
+    it('should resolve if the item already exists', (done) => {
       rt.create(aws)()
         .then((r) => C
-          .check(done, () => expect(r).to.be.ok), C.getFail(done));
+          .check(done, () => expect(r.RouteTableId).to.equal('routeTableId')))
+        .fail(C.getFail(done));
     });
+
+    it('should call ec2.createRouteTable if the item does not exist',
+      (done) => {
+        aws.ec2.describeRouteTables = () => Q.resolve({ RouteTables: [] });
+        rt.create(aws)()
+          .then((r) => C
+            .check(done, () => expect(r).to.equal(true)))
+          .fail(C.getFail(done));
+      });
   });
 
   describe('describe function', () => {
@@ -59,4 +71,59 @@ describe('AWS: EC2: Route Tables', () => {
     });
   });
 
+  describe('findDefault function', () => {
+    it('should return a promise', () => {
+      expect(typeof rt.findDefault(aws)).to.equal('function');
+    });
+
+    it('should return a resolving promise (if describe works)', (done) => {
+      const p = rt.findDefault(aws)();
+      p.then(() => C.check(done, () => expect(true).to.be.ok))
+        .fail(C.getFail(done));
+    });
+
+    it('should return a rejecting promise (if describe returns an empty array)',
+      (done) => {
+        aws.ec2.describeRouteTables = () => Q.resolve({ RouteTables: [] });
+        const p = rt.findDefault(aws)();
+        p.then(C.getFail(done))
+          .fail((err) => C
+            .check(done, () => expect(err instanceof Error).to.be.ok));
+      });
+  });
+
+  describe('bindAws function', () => {
+    it('should partially apply aws to the API', (done) => {
+      const rbound = rt.bindAws(aws);
+      const p = rbound.findDefault()();
+      p.then(() => C.check(done, () => expect(true).to.be.ok))
+        .fail(C.getFail(done));
+    });
+  });
+
+  describe('destroy function', () => {
+    it('should throw without an id', () => {
+      expect(() => rt.destroy(aws)).to.throw(TypeError);
+    });
+    
+    it('should return a function', () => {
+      expect(typeof rt.destroy(aws, 'rtId')).to.equal('function');
+    });
+
+    it('should resolve "already deleted" if the id is _not_ in the list',
+      (done) => {
+        const p = rt.destroy(aws, 'rtId')();
+        p.then((r) => C
+          .check(done, () => expect(r).to.equal('already deleted')))
+          .fail(C.getFail(done));
+      });
+    
+    it('should resolve "deleted" if the id _is_ in the list',
+      (done) => {
+        const p = rt.destroy(aws, 'routeTableId')();
+        p.then((r) => C
+          .check(done, () => expect(r).to.equal('deleted')))
+          .fail(C.getFail(done));
+      });
+  });
 });

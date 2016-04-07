@@ -3,13 +3,16 @@
 const filter = require('./ec2-filter');
 const tag = require('./ec2-tag');
 const constants = require('../../constants');
+const util = require('../../util');
 const awsUtil = require('../aws-util');
+const awsConstants = require('../aws-constants');
 
 module.exports = {
   bindAws,
   create,
   describe,
   destroy,
+  findDefault,
   list
 };
 
@@ -47,16 +50,22 @@ function describe(aws) {
 function create(aws) {
 
   function promiseToCreate() {
-    return aws.ec2
-      .createRouteTable({
-        DryRun: false,
-        VpcId: aws.vpcId
-      })
-      .then((result) => result.RouteTable)
-      .then((routeTable) => tag
-        .tag(aws, [routeTable.RouteTableId], [tag.createClusternator()])()
-        .then(() => routeTable)
-      );
+    return describe(aws)()
+      .then((desc) => desc.RouteTables && desc.RouteTables.length ?
+        desc.RouteTables[0] :
+        aws.ec2
+          .createRouteTable({
+            VpcId: aws.vpcId
+          })
+          .then((result) => result.RouteTable)
+          .then((routeTable) => util.makeRetryPromiseFunction(tag
+            .tag(aws, [routeTable.RouteTableId], [tag.createClusternator()]),
+            awsConstants.AWS_RETRY_LIMIT,
+            awsConstants.AWS_RETRY_DELAY,
+            awsConstants.AWS_RETRY_MULTIPLIER,
+            null,
+            'create route-table tag')()
+            .then(() => routeTable)) );
   }
 
   return promiseToCreate;
@@ -64,15 +73,22 @@ function create(aws) {
 
 /**
  * @param {AwsWrapper} aws
- * @param {string} vpcId
+ * @param {string} routeTableId
  * @returns {function(): Promise.<string>}
+ * @throws {TypeError}
  */
 function destroy(aws, routeTableId) {
+  if (!routeTableId) {
+    throw new TypeError('destroy requires a routeTableId');
+  }
 
   function promiseToDestroy() {
-    return aws.ec2
-      .deleteRouteTable({RouteTableId: routeTableId})
-      .then(() => 'deleted');
+    return list(aws)()
+      .then((routes) => routes.indexOf(routeTableId) === -1 ?
+        'already deleted' :
+        aws.ec2
+          .deleteRouteTable({ RouteTableId: routeTableId })
+          .then(() => 'deleted'));
   }
 
   return promiseToDestroy;
@@ -116,14 +132,10 @@ function findDefault(aws) {
   function promiseToFindDefault() {
     return describe(aws)().then((routes) => {
 
-      let theRouteDesc = routes.find((rDesc) => (
-        rDesc.Tags.some((tag) => tag.Key === constants.CLUSTERNATOR_TAG)
-      ));
-
-      if (theRouteDesc) {
-        return theRouteDesc;
+      if (routes.RouteTables && routes.RouteTables.length) {
+        return routes.RouteTables[0];
       }
-
+      
       throw new Error('No Clusternator Route For VPC: ' + aws.vpcId);
     });
   }
