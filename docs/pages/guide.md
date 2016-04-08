@@ -8,6 +8,6 @@ permalink: /guide/
 - [Requirements](/guide/requirements "Requirements")
 - [OS X Requirements](/guide/os-x "OS X Requirements")
 - [Installation](/guide/installation "Installation")
-- [Project Management](/guide/project/management "Project Management")
+- [Project Guide](/guide/project "Project Guide")
 - [Administrator's Guide](/guide/admin "Administrator's Guide")
 - [Development and Contributions](/guide/dev "Help Appreciated")
