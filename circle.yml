@@ -5,6 +5,7 @@ machine:
         - docker
 dependencies:
   pre:
+    - npm install -g codeclimate-test-reporter
     - npm install aws-sdk
     - mkdir .private
     - cp ./.clusternator/aws.json ./.private
@@ -12,8 +13,10 @@ dependencies:
     - cp ./.clusternator/config.json ./.private/config.local.json
     - cp ./.clusternator/credentials.json ./.private/credentials.local.json
     - cp ./.clusternator/.clusternator-config.json ~/
-
-
+test:
+  post:
+    - cp ./coverage/lcov.info $CIRCLE_ARTIFACTS/
+    - CODECLIMATE_REPO_TOKEN=927d33e08aa12e279658d01ca95cb02177c4927db612ae02b02a30a5e0b81aaa codeclimate-test-reporter < coverage/lcov.info
 deployment:
   hub:
     branch: master

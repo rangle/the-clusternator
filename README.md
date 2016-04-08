@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/rangle/the-clusternator.png?label=ready&title=Ready)](https://waffle.io/rangle/the-clusternator)  [![Circle CI](https://circleci.com/gh/rangle/the-clusternator.svg?style=shield)](https://circleci.com/gh/rangle/the-clusternator)
+[![Stories in Ready](https://badge.waffle.io/rangle/the-clusternator.png?label=ready&title=Ready)](https://waffle.io/rangle/the-clusternator)  [![Circle CI](https://circleci.com/gh/rangle/the-clusternator.svg?style=shield)](https://circleci.com/gh/rangle/the-clusternator) [![Test Coverage](https://codeclimate.com/github/rangle/the-clusternator/badges/coverage.svg)](https://codeclimate.com/github/rangle/the-clusternator/coverage)
 
 # THE CLUSTERNATOR
 
