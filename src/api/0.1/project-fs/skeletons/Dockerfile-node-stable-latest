@@ -1,5 +1,4 @@
-# Base: Ubuntu
-FROM sethdavenport/clusternator-node-5:latest
+FROM rangle/clusternator-node-5:latest
 
 # Set up a place for your applications to live.
 RUN mkdir /home/app
