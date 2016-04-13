@@ -66,7 +66,7 @@ function initOptional(options, projectRoot) {
     promises.push(circle.init(projectRoot, options.clusternatorDir,
       options.gitHubOwner));
   }
-  if (options.backend === 'node') {
+  if (options.backend !== 'static') {
     promises.push(initializeServeSh(
       fs.path.join(projectRoot, options.clusternatorDir)));
   }
@@ -87,4 +87,3 @@ function initializeServeSh(root) {
       return fs.chmod(sPath, '755');
     });
 }
-

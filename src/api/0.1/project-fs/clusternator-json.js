@@ -201,7 +201,7 @@ function getDefaultPorts(answers, skipDefaults) {
   if (skipDefaults) {
     return { portInternal: '', portExternal: '' };
   }
-  if (answers.backend === 'node') {
+  if (answers.backend !== 'static') {
     return {
       portExternal: DEFAULT_PORT_EXTERNAL,
       portInternal: DEFAULT_PORT_INTERNAL_NODE
