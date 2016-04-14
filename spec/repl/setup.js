@@ -4,6 +4,7 @@ const TEST_ROUTE = 'rtb-79284a1d';
 const TEST_R53 = '/hostedzone/Z1K98SX385PNRP';
 
 var path = require('path');
+var https = require('https');
 
 var sourcePath = path.join('..', '..', 'src');
 
