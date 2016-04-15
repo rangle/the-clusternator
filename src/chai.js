@@ -12,9 +12,11 @@ global.expect = chai.expect;
 
 module.exports = {
   check,
-  getFail,
+  checkFn,
   checkResolve,
-  checkReject
+  checkReject,
+  checkAsync,
+  getFail,
 };
 
 /*global describe, it, expect, beforeEach, afterEach */
@@ -57,16 +59,41 @@ function check(done, fn) {
 
 /**
   @param {function(...)} done
+  @param {function(...)} fn
+*/
+function checkFn(done, fn) {
+  return (result) => {
+    try {
+      fn(result);
+      done();
+    } catch (err) {
+      done(err);
+    }
+  };
+}
+
+/**
+  @param {function(...)} done
   @return {function(...)}
 */
 function getFail(done) {
   function fail(err) {
-      if (err instanceof Error) {
-        done(err);
-      } else {
-        done(new Error('this case should not happen'));
-      }
+    if (err instanceof Error) {
+      done(err);
+    } else {
+      done(new Error('this case should not happen'));
+    }
   }
   return fail;
+}
+
+/**
+  @param {function(...)} fn Function to test
+  @return {function(...)} test (eg, (r) => expect(r).to.be.ok)
+*/
+function checkAsync(fn, test) {
+  return function(done) {
+    fn().then(checkFn(done, test), getFail(done));
+  };
 }
 

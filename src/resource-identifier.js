@@ -78,7 +78,7 @@ function reduceSegments(memo, seg) {
  * @param {string} rid
  * @returns {Object}
  *
- * @example parseRID('the-clusternator--my-project--pr-5');
+ * @example parseRID('clusternator-pid-my-project--pr-5');
   // { pid: 'my-project', pr: '5' }
  */
 function parseRID(rid) {
@@ -105,7 +105,7 @@ function parseRID(rid) {
  * @returns {string}
  *
  * @example generateRID({ pid: 'my-project', pr: '5' });
-     // 'the-clusternator--my-project--pr-5'
+     // 'clusternator-pid-my-project--pr-5'
  */
 function generateRID(params) {
   const idSegments = R
