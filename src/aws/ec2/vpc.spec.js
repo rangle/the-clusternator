@@ -82,34 +82,10 @@ describe('AWS: EC2: VPC', () => {
   });
 
   describe('findProjectTag function', () => {
-    it('should return null if given a list without a clusternator project tag',
-      () => {
-      expect(vpc.helpers.findProjectTag('id', {
-        Vpcs: [{
-          Tags: [{
-            Key: 'hahah',
-            Value: 'not found'
-          }]
-        }]
-      })()).to.be['null'];
-    });
-
-    it('should return truthy if given a list with a clusternator project tag',
-      () => {
-      expect(vpc.helpers.findProjectTag('id', {
-        Vpcs: [{
-          Tags: [{
-            Key: constants.PROJECT_TAG,
-            Value: 'id'
-          }]
-        }]
-      })()).to.be.ok;
-    });
-
-    describe('findMasterVPC function', () => {
+    describe('findVpc function', () => {
     it('should return truthy if given a list without a clusternator ' +
         'project tag', () => {
-      expect(vpc.helpers.findMasterVPC({
+      expect(vpc.findVpc({
         Vpcs: [{
           Tags: [{
             Key: 'I have no tags',
@@ -121,10 +97,10 @@ describe('AWS: EC2: VPC', () => {
 
     it('should return null if given a list with a clusternator ' +
         'project tag', () => {
-        expect(vpc.helpers.findMasterVPC({
+        expect(vpc.findVpc({
           Vpcs: [{
             Tags: [{
-              Key: constants.PROJECT_TAG,
+              Key: constants.CLUSTERNATOR_TAG,
               Value: 'id'
             }]
           }]

@@ -9,7 +9,8 @@ const Subnet = require('./subnetManager');
 const ecrWrap = require('./ecr/ecr');
 const hashTable = require('./ddb/hash-table');
 const iamWrap = require('./iam/iam');
-const Route = require('./routeTableManager');
+// const Route = require('./routeTableManager');
+const Route = require('./ec2/route-table');
 const Route53 = require('./route53Manager');
 const Acl = require('./aclManager');
 const Cluster = require('./clusterManager');
@@ -23,13 +24,14 @@ const R = require('ramda');
 const DEFAULT_REGION = 'us-east-1';
 const elbLib = require('./elb/elb');
 
-let Vpc = require('./vpcManager');
+const Vpc = require('./ec2/vpc');
 
 function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam, awsEcr,
                            elb) {
 
+  const promisifiedEc2 = util.makePromiseApi(ec2);
   const cluster = Cluster(ecs);
-  const vpc = Vpc(ec2);
+  const vpc = Vpc.bindAws({ ec2: promisifiedEc2 });
   const r53 = Route53(awsRoute53);
 
   const ht = hashTable.bindAws({ ddb: dynamoDB });
@@ -89,7 +91,7 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam, awsEcr,
     return state()
       .then((s) => Q
         .all([
-          s.route.findDefault(),
+          s.route.findDefault()(),
           s.acl.create(projectId),
           ecr.create(projectId) ])
         .then((results) => {
@@ -364,19 +366,20 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam, awsEcr,
 
   function initState() {
     return Q.all([
-      vpc.findProject(),
+      vpc.findVpc()(),
       r53.findId()
     ]).then((results) => {
       const state = STATE;
+      const AWS = {
+         ec2: promisifiedEc2, vpcId: state.vpcId 
+      };
 
       state.vpcId = results[0].VpcId;
       state.zoneId = results[1];
-      state.route = Route(ec2, state.vpcId);
+      state.route = Route.bindAws(AWS); 
       state.subnet = Subnet(ec2, state.vpcId);
       state.acl = Acl(ec2, state.vpcId);
-      state.ec2Mgr = Ec2.bindAws({ 
-        ec2: util.makePromiseApi(ec2), vpcId: state.vpcId 
-      });
+      state.ec2Mgr = Ec2.bindAws(AWS);
       state.pullRequest = Pr(ec2, ecs, awsRoute53, elb, state.vpcId,
         state.zoneId);
       state.deployment = Deployment(ec2, ecs, awsRoute53, elb, state.vpcId,

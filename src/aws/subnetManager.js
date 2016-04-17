@@ -10,7 +10,7 @@ const util = require('../util');
 const constants = require('../constants');
 const awsConstants = require('./aws-constants');
 
-let Vpc = require('./vpcManager');
+let Vpc = require('./ec2/vpc');
 let common = require('./common');
 
 /**
@@ -20,7 +20,7 @@ let common = require('./common');
 function getSubnetManager(ec2, vpcId) {
   ec2 = util.makePromiseApi(ec2);
 
-  const vpc = Vpc(ec2);
+  const vpc = Vpc.bindAws({ ec2, vpcId });
   const baseFilters = awsConstants.AWS_FILTER_CTAG.concat(
     common.makeAWSVPCFilter(vpcId));
   const describe = common.makeEc2DescribeFn(
@@ -28,11 +28,14 @@ function getSubnetManager(ec2, vpcId) {
   const describeProject = common.makeEc2DescribeProjectFn(describe);
 
   /**
-  @param {string} pid
   @return {Q.Promise}
   */
-  function getCidrPrefix(pid) {
-    return vpc.findProject(pid).then(function(v) {
+  function getCidrPrefix() {
+    /** 
+     * @todo this cidr function should be injected from elsewhere instead of
+     * determined by this module.  Subnets is due for its upgrade.
+     */
+    return vpc.findVpc()().then(function(v) {
       return util.getCidrPrefixFromIPString(v.CidrBlock);
     });
   }

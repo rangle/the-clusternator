@@ -12,13 +12,10 @@ const util = require('../../util');
 
 module.exports = {
   bindAws,
-  helpers: {
-    findProjectTag: findProjectTag,
-    findMasterVPC: findMasterVPC
-  },
   create,
   describe,
   destroy,
+  findVpc,
   list
 };
 
@@ -108,35 +105,15 @@ function list(aws) {
 }
 
 /**
-  finds a vpc from a project
-  @param {string} projectId
-  @param {Object} list (see AWS docs)
-  http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html
-*/
-function findProjectTag(projectId, list) {
-
-  function promiseToFindProjectTag() {
-    return R.find((vDesc) => (
-      R.any(R.allPass([
-        R.propEq('Key', constants.PROJECT_TAG),
-        R.propEq('Value', projectId)
-      ]))(vDesc.Tags)
-    ))(list.Vpcs) || null;
-  }
-
-  return promiseToFindProjectTag;
-}
-
-/**
   finds the _last_ clusternator tagged VPC _without_ a clusternator proj tag
   @param {Object} list (see AWS docs)
   http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html
 */
-function findMasterVPC(list) {
+function findVpc(list) {
 
   function promiseToFindMasterVPC() {
     return R.find((vDesc) => (
-      R.none(R.propEq('Key', constants.PROJECT_TAG))(vDesc.Tags)
+      R.none(R.propEq('Key', constants.CLUSTERNATOR_TAG))(vDesc.Tags)
     ))(list.Vpcs) || null;
   }
 

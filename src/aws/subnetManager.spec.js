@@ -4,7 +4,6 @@ const rewire = require('rewire');
 const Q = require('q');
 const constants = require('../constants');
 const common = require('./common');
-const VpcMock = require('./vpc-mock');
 const ec2Mock = require('./ec2-mock');
 
 const Subnet = rewire('./subnetManager');
@@ -22,10 +21,13 @@ describe('subnetManager', () => {
       CidrBlock: '1.2.0.4'
     }];
   let origVPC;
+  const Vpc = {};
 
   beforeEach(() => {
+    Vpc.bindAws = () => Vpc;
+    Vpc.findVpc = () => () => Q.resolve({ CidrBlock: '192.168.1.0' });
     origVPC = Subnet.__get__('Vpc');
-    Subnet.__set__('Vpc', VpcMock);
+    Subnet.__set__('Vpc', Vpc);
     subnet = Subnet(ec2Mock, 'vpc-id');
   });
 
