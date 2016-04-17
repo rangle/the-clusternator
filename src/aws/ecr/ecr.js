@@ -6,7 +6,7 @@
  */
 
 const common = require('../common');
-const awsUtil = require('../aws-util');
+const awsCommon = require('../common');
 const util = require('../../util');
 const rid = require('../../resource-identifier');
 
@@ -24,7 +24,7 @@ module.exports = {
  * @returns {Object} this API bound to
  */
 function bindAws(aws) {
-  return awsUtil.bindAws(aws, module.exports);
+  return awsCommon.bindAws(aws, module.exports);
 }
 
 /**

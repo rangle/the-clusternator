@@ -6,7 +6,7 @@ const MAX_LISTED_RESULTS = 100;
 
 const Q = require('q');
 const util = require('../../util');
-const awsUtil = require('../aws-util');
+const awsCommon = require('../common');
 
 const clusternatePrefixString = require('../../resource-identifier')
   .clusternatePrefixString;
@@ -36,7 +36,7 @@ module.exports = EXPORTS;
  * @returns {Object.<function(...)>}
  */
 function bindAws(aws) {
-  return awsUtil.bindAws(aws, EXPORTS);
+  return awsCommon.bindAws(aws, EXPORTS);
 }
 
 /**

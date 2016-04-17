@@ -4,7 +4,7 @@ const filter = require('./ec2-filter');
 const tag = require('./ec2-tag');
 const constants = require('../../constants');
 const util = require('../../util');
-const awsUtil = require('../aws-util');
+const awsCommon = require('../common');
 const awsConstants = require('../aws-constants');
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
  * @returns {Object} this API bound to
  */
 function bindAws(aws) {
-  return awsUtil.bindAws(aws, module.exports);
+  return awsCommon.bindAws(aws, module.exports);
 }
 
 /**

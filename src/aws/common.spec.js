@@ -388,4 +388,37 @@ describe('common AWS functions', () => {
       expect(typeof common.zduClusterNames()).to.equal('function');
     }); 
   });
+  
+  describe('bindAws function', () => {
+    const aws = {};
+    
+    it('should throw without a target object', () => {
+      expect(() => common.bindAws(aws)).to.throw(TypeError);
+    });
+    it('should return a copy of the api bound with an aws object', () => {
+      let testAws = false;
+      const verboseApi = { test: (aws) => { testAws = aws ? true : false; }};
+      common.bindAws(aws, verboseApi).test();
+      expect(testAws).to.equal(true);
+    });
+
+    it('should preserve non-functions on API', () => {
+      const verboseApi = { test: () => {}, direct: 'direct' };
+      expect(common.bindAws(aws, verboseApi).direct).to.equal('direct');
+    });
+
+    it('should skip binding function keys named bindAws', () => {
+      let testAws = false;
+      let called = false;
+      const verboseApi = {
+        test: (aws) => {
+          testAws = aws ? true : false;
+        },
+        bindAws: () => { called = true; }};
+      const api = common.bindAws(aws, verboseApi);
+      api.bindAws(aws, verboseApi);
+      expect(testAws).to.equal(false);
+      expect(called).to.equal(true);
+    });
+  });
 });

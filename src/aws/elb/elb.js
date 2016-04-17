@@ -7,7 +7,7 @@
 
 const util = require('../../util');
 const constants = require('../../constants');
-const awsUtil = require('../aws-util');
+const awsCommon = require('../common');
 const awsConstants = require('../aws-constants');
 const tag = require('./elb-tag.js');
 const pListeners = require('./port-listener');
@@ -43,7 +43,7 @@ module.exports = {
  * @returns {Object} this API bound to
  */
 function bindAws(aws) {
-  return awsUtil.bindAws(aws, module.exports);
+  return awsCommon.bindAws(aws, module.exports);
 }
 
 /**

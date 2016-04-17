@@ -7,7 +7,7 @@
 const awsConstants = require('../../aws-constants');
 const util = require('../../../util');
 const vmud = require('./vm-user-data');
-const awsUtil = require('../../aws-util');
+const awsCommon = require('../../common');
 // not a constant for testing purposes (imports fix this :) )
 let tag = require('./../ec2-tag');
 let vm = require('./vm');
@@ -105,7 +105,7 @@ function unStagePr(aws, projectId, pr) {
  * @returns {Object} this API bound to
  */
 function bindAws(aws) {
-  return awsUtil.bindAws(aws, module.exports);
+  return awsCommon.bindAws(aws, module.exports);
 }
 
 /**

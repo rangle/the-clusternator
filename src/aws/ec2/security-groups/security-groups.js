@@ -11,7 +11,7 @@ const constants = require('../../../constants');
 const awsConstants = require('../../aws-constants');
 const rid = require('../../../resource-identifier');
 const util = require('../../../util');
-const awsUtil = require('../../aws-util');
+const awsCommon = require('../../common');
 
 const ipPerms = require('./security-groups-ip-permissions');
 const ipRange = require('./security-group-ip-range');
@@ -46,7 +46,7 @@ module.exports = {
  * @returns {Object} this API bound to
  */
 function bindAws(aws) {
-  return awsUtil.bindAws(aws, module.exports);
+  return awsCommon.bindAws(aws, module.exports);
 }
 
 
