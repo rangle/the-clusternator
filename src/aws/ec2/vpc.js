@@ -105,17 +105,18 @@ function list(aws) {
 }
 
 /**
-  finds the _last_ clusternator tagged VPC _without_ a clusternator proj tag
+  finds the first clusternator tagged VPC
   @param {Object} list (see AWS docs)
   http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html
 */
-function findVpc(list) {
+function findVpc(aws) {
 
-  function promiseToFindMasterVPC() {
-    return R.find((vDesc) => (
-      R.none(R.propEq('Key', constants.CLUSTERNATOR_TAG))(vDesc.Tags)
-    ))(list.Vpcs) || null;
+  function promiseToFindVpc() {
+    return describe(aws)()
+      .then((r) => r.Vpcs[0] ? 
+        r.Vpcs[0] :
+        Promise.reject(new Error('no clusternator vpc found')));
   }
 
-  return promiseToFindMasterVPC;
+  return promiseToFindVpc;
 }

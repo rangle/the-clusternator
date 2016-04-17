@@ -81,31 +81,23 @@ describe('AWS: EC2: VPC', () => {
     });
   });
 
-  describe('findProjectTag function', () => {
-    describe('findVpc function', () => {
-    it('should return truthy if given a list without a clusternator ' +
-        'project tag', () => {
-      expect(vpc.findVpc({
-        Vpcs: [{
-          Tags: [{
-            Key: 'I have no tags',
-            Value: 'id'
-          }]
-        }]
-      })()).to.be.ok;
+  describe('findVpc function', () => {
+    it('should return a function', () => {
+      expect(typeof vpc.findVpc(aws)).to.equal('function');
     });
 
-    it('should return null if given a list with a clusternator ' +
-        'project tag', () => {
-        expect(vpc.findVpc({
-          Vpcs: [{
-            Tags: [{
-              Key: constants.CLUSTERNATOR_TAG,
-              Value: 'id'
-            }]
-          }]
-        })()).to.be['null'];
-      });
+    it('should resolve if there is an existing vpc', (done) => {
+      const p = vpc.findVpc(aws)();
+      p.then((r) => C.check(done, () => expect(r.VpcId).to.equal('vpcId')))
+        .fail(C.getFail(done));
+    });
+    
+    it('should reject if there is no vpc', (done) => {
+      aws.ec2.describeVpcs = () => Q.resolve({ Vpcs: [] });
+      const p = vpc.findVpc(aws)();
+      p.then(C.getFail(done))
+        .fail((err) => C
+          .check(done, () => expect(err instanceof Error).to.be.ok));
     });
   });
 

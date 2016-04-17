@@ -370,11 +370,12 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam, awsEcr,
       r53.findId()
     ]).then((results) => {
       const state = STATE;
+      const vpcId = results[0].VpcId;
       const AWS = {
-         ec2: promisifiedEc2, vpcId: state.vpcId 
+         ec2: promisifiedEc2, vpcId
       };
 
-      state.vpcId = results[0].VpcId;
+      state.vpcId = vpcId;
       state.zoneId = results[1];
       state.route = Route.bindAws(AWS); 
       state.subnet = Subnet(ec2, state.vpcId);

@@ -37,20 +37,23 @@ describe('subnetManager', () => {
 
   describe('async describe with valid list', () => {
     let oldDesc;
+    let oldEc2Desc;
     beforeEach(() => {
+      const subnets = [{
+        CidrBlock: '192.168.0.0'
+      }];
+      const describeFn = () => Q.resolve(subnets);
+
+      oldEc2Desc = ec2Mock.describeSubnets;
+      ec2Mock.describeSubnets = (p, cb) => cb(null, { Subnets: subnets });
       oldDesc = common.makeEc2DescribeFn;
-      common.makeEc2DescribeFn = () => {
-        return () => {
-          return Q.resolve([{
-            CidrBlock: '192.168.0.0'
-          }]);
-        };
-      };
+      common.makeEc2DescribeFn = () => describeFn;
       Subnet.__set__('common', common);
       subnet = Subnet(ec2Mock, 'vpc-id');
     });
 
     afterEach(() => {
+      ec2Mock.describeSubnets = oldEc2Desc;
       common.makeEc2DescribeFn = oldDesc;
       Subnet.__set__('common', common);
     });

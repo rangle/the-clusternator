@@ -26,6 +26,12 @@ function getSubnetManager(ec2, vpcId) {
   const describe = common.makeEc2DescribeFn(
     ec2, 'describeSubnets', 'Subnets', baseFilters);
   const describeProject = common.makeEc2DescribeProjectFn(describe);
+  
+  function describeAll() {
+    return ec2.describeSubnets({
+      Filters: common.makeAWSVPCFilter(vpcId)
+    }).then((results) => results.Subnets ); 
+  }
 
   /**
   @return {Q.Promise}
@@ -76,7 +82,7 @@ function getSubnetManager(ec2, vpcId) {
     @return {Q.Promise<string>}
   */
   function getCidrPostfix() {
-    return describe().then(incrementHighestCidr);
+    return describeAll().then(incrementHighestCidr);
   }
 
   /**
@@ -88,12 +94,11 @@ function getSubnetManager(ec2, vpcId) {
   }
 
   /**
-    @param {string} pid
     @return {Q.Promise<string>}
   */
-  function getNextSubnet(pid) {
+  function getNextSubnet() {
     return Q.all([
-      getCidrPrefix(pid),
+      getCidrPrefix(),
       getCidrPostfix()
     ]).then(concatSubnetComponents);
   }
@@ -336,7 +341,7 @@ function getSubnetManager(ec2, vpcId) {
       if (result) {
         return result;
       }
-      return getNextSubnet(pid).then(function(cidr) {
+      return getNextSubnet().then(function(cidr) {
         return {
           VpcId: vpcId,
           CidrBlock: cidr,
