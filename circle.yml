@@ -14,10 +14,10 @@ dependencies:
     - cp ./.clusternator/.clusternator-config.json ~/
 
 
-deployment:
-  hub:
-    branch: master
-    commands:
-      - npm run build
-      - ./bin/clusternator.sh read-private -p $CLUSTERNATOR_GPG_KEY
-      - node .clusternator/docker-build.js
+# deployment:
+#  hub:
+#    branch: master
+#    commands:
+#      - npm run build
+#      - ./bin/clusternator.sh read-private -p $CLUSTERNATOR_GPG_KEY
+#      - node .clusternator/docker-build.js
