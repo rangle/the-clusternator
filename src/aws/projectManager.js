@@ -59,10 +59,10 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam, awsEcr,
   }
 
   function ecrAwsPartial(fn) {
-    return R.partial(fn, { ecr: util.makePromiseApi(awsEcr) });
+    return util.partial(fn, { ecr: util.makePromiseApi(awsEcr) });
   }
   function iamAwsPartial(fn) {
-    return R.partial(fn, { iam: util.makePromiseApi(awsIam) });
+    return util.partial(fn, { iam: util.makePromiseApi(awsIam) });
   }
 
   /**
