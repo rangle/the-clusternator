@@ -11,7 +11,7 @@ _Status_: alpha
 
 ## About
 
-The Clusternator attempts to make managing deployments of containers easy for 
+The Clusternator attempts to make managing deployments of containers easy for
 front end developers.  Specifically The Clusternator was built to fill the
 deoployment challenges of CI setups.
 
@@ -20,7 +20,7 @@ infrastructure.
 
 ## License
 
-Copyright (c) 2015 rangle.io
+Copyright (c) 2016 Rangle.io
 
 [MIT License][MIT]
 
