@@ -46,7 +46,7 @@
   "author": "rangle.io",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.3.7",
+    "aws-sdk": "^2.3.9",
     "base64url": "^1.0.5",
     "body-parser": "^1.14.2",
     "body-parser-rawbody": "^1.13.2",
