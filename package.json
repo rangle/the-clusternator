@@ -96,7 +96,7 @@
     "mock-spawn": "^0.2.6",
     "nodemon": "^1.9.2",
     "rewire": "^2.3.4",
-    "sinon": "^1.17.3",
+    "sinon": "^1.17.4",
     "supertest": "^1.1.0"
   },
   "eslintConfig": {
