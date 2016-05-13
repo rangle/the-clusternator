@@ -50,7 +50,7 @@
     "base64url": "^1.0.5",
     "body-parser": "^1.15.1",
     "body-parser-rawbody": "^1.13.2",
-    "compression": "^1.6.0",
+    "compression": "^1.6.2",
     "connect-ensure-login": "^0.1.1",
     "credential": "^0.2.6",
     "deepmerge": "^0.2.10",
