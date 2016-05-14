@@ -8,6 +8,7 @@
 const DOCKERFILE = 'Dockerfile';
 const DOCKERFILE_NODE_LTS_LATEST = 'Dockerfile-node-lts-latest';
 const DOCKERFILE_NODE_STABLE_LATEST = 'Dockerfile-node-stable-latest';
+const DOCKERFILE_NODE_CURRENT_LATEST = 'Dockerfile-node-current-latest';
 const DOCKERFILE_STATIC_LATEST = 'dockerfile-static-latest';
 const CLUSTERNATOR_DIR = /\$CLUSTERNATOR_DIR/g;
 const EXTERNAL_PORT = /\$EXTERNAL_PORT/g;
@@ -38,7 +39,8 @@ function initializeDockerFile(clustDir, dockerType, port) {
   const templateMap = {
     'static': DOCKERFILE_STATIC_LATEST,
     'node (long-term-support)': DOCKERFILE_NODE_LTS_LATEST,
-    'node (stable)': DOCKERFILE_NODE_STABLE_LATEST
+    'node (stable)': DOCKERFILE_NODE_STABLE_LATEST,
+    'node (current)': DOCKERFILE_NODE_CURRENT_LATEST,
   };
   const template = templateMap[dockerType || 'static'];
   return fs

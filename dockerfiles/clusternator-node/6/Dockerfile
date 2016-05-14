@@ -17,8 +17,8 @@ RUN set -ex \
   done
 
 # Default logging is super verbose.
-ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 5.11.1
+ENV NPM_CONFIG_LOGLEVEL warn
+ENV NODE_VERSION 6.1.0
 
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \

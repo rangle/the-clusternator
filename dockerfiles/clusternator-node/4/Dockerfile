@@ -1,4 +1,4 @@
-FROM rangle/clusternator-linux-base:latest
+FROM rangle/clusternator-linux-base:14.04
 
 # Get Node.
 # gpg keys listed at https://github.com/nodejs/node
@@ -18,7 +18,7 @@ RUN set -ex \
 
 # Default logging is super verbose.
 ENV NPM_CONFIG_LOGLEVEL warn
-ENV NODE_VERSION 4.4.0
+ENV NODE_VERSION 4.4.4
 
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \

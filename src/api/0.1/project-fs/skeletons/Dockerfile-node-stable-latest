@@ -1,4 +1,4 @@
-FROM rangle/clusternator-node-5:latest
+FROM rangle/clusternator-node-5:5.11.1
 
 # Set up a place for your applications to live.
 RUN mkdir /home/app
