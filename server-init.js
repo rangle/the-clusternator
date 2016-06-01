@@ -1,7 +1,6 @@
 'use strict';
 
-var server = require('./src/server/main'),
-  config = require('./src/config')();
+const server = require('./src/server/main');
+const config = require('./src/config')();
 
 server.startServer(config);
-

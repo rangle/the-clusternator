@@ -168,7 +168,7 @@ function describeAccessKeys(aws, name) {
       if (result.length) {
         return result;
       }
-      throw new Error(`IAM: No keys found for [name] `);
+      throw new Error(`IAM: No keys found for ${name} `);
     });
 }
 

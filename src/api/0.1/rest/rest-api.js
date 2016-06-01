@@ -27,7 +27,7 @@ const STATE = {
   db: null
 };
 
-const INVALID_CHANNEL_NAME = 'Channel names must be 21 characters or fewer,' 
+const INVALID_CHANNEL_NAME = 'Channel names must be 21 characters or fewer,'
 + 'lower case, and cannot contain spaces or periods.';
 
 module.exports = getCommands;
@@ -379,7 +379,7 @@ function pmCreateDeployment(body) {
               true)
             .then((url) => slack
               .message(`Create: ${projectId} deployment ${deployment} ` +
-                `successful.  Application will be available at ` +
+                'successful.  Application will be available at ' +
                 `<https://${url}>`,
                 project.channel))
             .fail((err) => {

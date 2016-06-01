@@ -1,16 +1,15 @@
 'use strict';
 
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var exit = require('gulp-exit');
-var mocha = require('gulp-mocha');
-var plumber = require('gulp-plumber');
-var istanbul = require('gulp-istanbul');
-var gutil = require('gulp-util');
-var spawn = require('child_process').spawn;
+const gulp = require('gulp');
+const exit = require('gulp-exit');
+const mocha = require('gulp-mocha');
+const plumber = require('gulp-plumber');
+const istanbul = require('gulp-istanbul');
+const gutil = require('gulp-util');
+const spawn = require('child_process').spawn;
 
-var jsPaths = ['src/**/*.js', 'src/*.js'];
-var specPaths = ['src/**/*.spec.js'];
+const jsPaths = ['src/**/*.js', 'src/*.js'];
+const specPaths = ['src/**/*.spec.js'];
 
 gulp.task('test', ['test-unit']);
 
@@ -19,7 +18,7 @@ gulp.task('test', ['test-unit']);
  */
 gulp.task('jsdoc', function jsDoc() {
   // Finally execute your script below - here 'ls -lA'
-  var child = spawn('npm', ['run', 'doc-api'], {cwd: process.cwd()});
+  const child = spawn('npm', ['run', 'doc-api'], {cwd: process.cwd()});
 
   child.stdout.setEncoding('utf8');
 
@@ -64,7 +63,7 @@ gulp.task('pre-test-unit', function preUnitTest() {
 /**
  * lints then runs the mocha unit tests
  */
-gulp.task('test-unit', ['lint', 'pre-test-unit'], function testUnit() {
+gulp.task('test-unit', ['pre-test-unit'], function testUnit() {
   return gulp
     .src(specPaths)
     .pipe(mocha())
@@ -91,14 +90,4 @@ gulp.task('test-unit', ['lint', 'pre-test-unit'], function testUnit() {
       }
     } }))
     .pipe(exit());
-});
-
-/**
- * lints the source
- */
-gulp.task('lint', function lint() {
-  return gulp.src(jsPaths.concat(specPaths))
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
 });

@@ -2,9 +2,9 @@
 
 const R = require('ramda');
 
-var setup = require('./setup');
-var util = require(setup.path('util'));
-var iam = require(setup.path('aws', 'iam', 'iam.js'));
+const setup = require('./setup');
+const util = require(setup.path('util'));
+const iam = require(setup.path('aws', 'iam', 'iam.js'));
 
 const partialedIam = R.mapObjIndexed(iamAwsPartial, iam);
 

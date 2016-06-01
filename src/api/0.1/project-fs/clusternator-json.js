@@ -219,8 +219,8 @@ function promptPorts(answers, skipDefaults) {
     .inquirerPrompt(ports)
     .then((portAnswers) => {
       if (!addPortAnswer(answers, portAnswers)) {
-        util.warn(`${portAnswers.portInternal}:${portAnswers.portExternal} ` +
-        ` was not added.  The internal, or external port is already in mapped`);
+        util.warn(`${portAnswers.portInternal}:${portAnswers.portExternal}` +
+        ' was not added.  The internal, or external port is already mapped');
       }
       if (portAnswers.moar) {
         return promptPorts(answers, true);

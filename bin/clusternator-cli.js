@@ -10,7 +10,9 @@
 'use strict';
 
 const USER = require('../src/config')().user;
-const API = USER ? USER.apiVersion : require('../src/constants').DEFAULT_API_VERSION;
+const API = USER ?
+  USER.apiVersion :
+  require('../src/constants').DEFAULT_API_VERSION;
 
 const yargs = require('yargs');
 

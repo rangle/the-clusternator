@@ -4,7 +4,7 @@
 const path = require('path');
 const http = require('https');
 
-const HOST = `$HOST`;
+const HOST = '$HOST';
 const CLUSTERNATOR = `the-clusternator.${HOST}`;
 const PORT = 443;
 const CONFIG_FILE = 'clusternator.json';
@@ -143,4 +143,3 @@ function post(data, auth, path) {
     postReq.end();
   });
 }
-

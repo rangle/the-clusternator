@@ -1,8 +1,10 @@
 'use strict';
-var util = require('util');
+
+const util = require('util');
 
 function logOutput() {
-  var output = '', i;
+  let output = '';
+  let i;
 
   for (i = 0; i < arguments.length; i += 1) {
     if (typeof arguments[i] === 'object') {

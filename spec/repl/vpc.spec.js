@@ -1,4 +1,6 @@
-var setup = require('./setup');
+'use strict';
+
+const setup = require('./setup');
 
 const util = require(setup.path('util'));
 const VPC = require(setup.path('aws', 'ec2', 'vpc.js'));

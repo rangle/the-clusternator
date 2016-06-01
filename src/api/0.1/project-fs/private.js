@@ -72,7 +72,7 @@ function privateDiff() {
         .then(getPrivateDiffFn(sha))
         .fail(() => {
           // read file errors are expected
-          util.info(`Diff: no checksum to compare against`);
+          util.info('Diff: no checksum to compare against');
           process.exit(2);
         })))
     .fail((err) => {
