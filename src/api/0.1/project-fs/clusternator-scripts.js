@@ -64,7 +64,7 @@ function initOptional(options, projectRoot) {
 
   if (options.circleCI) {
     promises.push(circle.init(projectRoot, options.clusternatorDir,
-      options.gitHubOwner));
+      options.gitHubOwner, options.backend));
   }
   if (options.backend !== 'static') {
     promises.push(initializeServeSh(

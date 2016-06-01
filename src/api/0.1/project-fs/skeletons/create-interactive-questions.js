@@ -1,5 +1,6 @@
 'use strict';
 const skeleton = require('./clusternator-json-skeleton');
+const supportedAppBackends = require('../supported-app-backends');
 const cmn = require('../../common');
 const util = cmn.src('util');
 
@@ -166,12 +167,7 @@ function projectInit(defaults) {
     {
       type: 'list',
       name: 'backend',
-      choices: [
-        'static',
-        'node (long-term-support)',
-        'node (stable)',
-        'node (current)'
-      ],
+      choices: Object.keys(supportedAppBackends),
       message: 'Choose a backend'
     },
     {

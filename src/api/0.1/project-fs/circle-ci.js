@@ -8,6 +8,7 @@
 
 const CLUSTERNATOR_DIR = /\$CLUSTERNATOR_DIR/g;
 const OWNER = /\$OWNER/g;
+const NODE_FULL_VERSION = /\$NODE_FULL_VERSION/g;
 const UTF8 = 'utf8';
 const CIRCLEFILE = 'circle.yml';
 
@@ -16,6 +17,7 @@ const Q = require('q');
 const YAML = require('yamljs');
 
 const fs = require('./project-fs');
+const supportedAppBackends = require('./supported-app-backends');
 
 module.exports = {
   loadExistingCircleCIFile,
@@ -58,11 +60,14 @@ function loadExistingCircleCIFile(root) {
  * @param {string} owner
  * @return {Q.Promise<string>}
  */
-function getCircleSkeleton(clustDir, owner) {
+function getCircleSkeleton(clustDir, owner, backend) {
   return loadCircleCIFile(fs.path.join(fs.getSkeletonPath(), CIRCLEFILE),
     (f) => f
       .replace(CLUSTERNATOR_DIR, clustDir)
-      .replace(OWNER, owner));
+      .replace(OWNER, owner)
+      .replace(
+        NODE_FULL_VERSION,
+        supportedAppBackends[backend].options.NODE_FULL_VERSION));
 }
 
 /**
@@ -71,10 +76,10 @@ function getCircleSkeleton(clustDir, owner) {
  * @param {string} owner
  * @returns {Q.Promise<string>}
  */
-function initializeCircleCIFile(root, clustDir, owner) {
+function initializeCircleCIFile(root, clustDir, owner, backend) {
   return Q
     .all([
-      getCircleSkeleton(clustDir, owner),
+      getCircleSkeleton(clustDir, owner, backend),
       loadExistingCircleCIFile(root) ])
     .then((results) => YAML
       .stringify(merge(results[0], results[1]), 5));
@@ -86,7 +91,7 @@ function initializeCircleCIFile(root, clustDir, owner) {
  * @param {string} owner
  * @returns {Q.Promise}
  */
-function init(root, clustDir, owner) {
-  return initializeCircleCIFile(root, clustDir, owner)
+function init(root, clustDir, owner, backend) {
+  return initializeCircleCIFile(root, clustDir, owner, backend)
     .then((text) => fs.write(fs.path.join(root, CIRCLEFILE), text));
 }

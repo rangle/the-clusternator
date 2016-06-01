@@ -6,16 +6,12 @@
  * @module api/'0.1'/projectFs/docker
  */
 const DOCKERFILE = 'Dockerfile';
-const DOCKERFILE_NODE_LTS_LATEST = 'Dockerfile-node-lts-latest';
-const DOCKERFILE_NODE_STABLE_LATEST = 'Dockerfile-node-stable-latest';
-const DOCKERFILE_NODE_CURRENT_LATEST = 'Dockerfile-node-current-latest';
+const DOCKERFILE_NODE_LATEST = 'dockerfile-node-latest';
 const DOCKERFILE_STATIC_LATEST = 'dockerfile-static-latest';
-const CLUSTERNATOR_DIR = /\$CLUSTERNATOR_DIR/g;
-const EXTERNAL_PORT = /\$EXTERNAL_PORT/g;
 
 const fs = require('./project-fs');
 const privateFs = require('./private');
-
+const supportedAppBackends = require('./supported-app-backends');
 const cmn = require('../common');
 
 const docker = cmn.src('cli-wrappers', 'docker');
@@ -30,29 +26,27 @@ module.exports = {
 /**
  *
  * @param {string} clustDir
- * @param {string} dockerType
+ * @param {string} backendType
  * @param {number=} port
  * @returns {Q.Promise}
  */
-function initializeDockerFile(clustDir, dockerType, port) {
-  /** @todo do not overwrite existing Dockerfile */
-  const templateMap = {
-    'static': DOCKERFILE_STATIC_LATEST,
-    'node (long-term-support)': DOCKERFILE_NODE_LTS_LATEST,
-    'node (stable)': DOCKERFILE_NODE_STABLE_LATEST,
-    'node (current)': DOCKERFILE_NODE_CURRENT_LATEST,
-  };
-  const template = templateMap[dockerType || 'static'];
+function initializeDockerFile(clustDir, backendType, port) {
+  const backend = supportedAppBackends[backendType || 'static' ];
+  const options = Object.assign({}, backend.options, {
+    EXTERNAL_PORT: port
+  });
+
   return fs
     .findProjectRoot()
-    .then((root) => fs.getSkeleton(template)
+    .then((root) => fs.getSkeleton(backend.dockerTemplate)
       .then((contents) => {
-        if (port) {
-          contents = contents.replace(EXTERNAL_PORT, port);
-        }
-        contents = contents.replace(CLUSTERNATOR_DIR, clustDir);
+        Object.keys(options)
+          .map(k => contents = contents.replace(
+            new RegExp('\\$' + k, 'g'),
+            options[k]));
+
         return fs.write(fs.path.join(root, DOCKERFILE), contents);
-      }) );
+      }));
 }
 
 /**
