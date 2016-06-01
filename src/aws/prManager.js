@@ -178,9 +178,9 @@ function getPRManager(ec2, ecs, r53, awsElb, vpcId, zoneId) {
         .then(() => {
           creq.url = route53.generatePRDomain(projectId, pr);
           return creq;
-        })
-        .then((creq) => common.qualifyUrl(Config(), creq.url)))
-      .then(() => updateDestroy(creq));
+        }) )
+      .then(() => updateDestroy(creq))
+      .then(() => common.qualifyUrl(Config(), creq.url));
   }
 
   /**
