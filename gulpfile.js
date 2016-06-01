@@ -1,7 +1,6 @@
 'use strict';
 
 var gulp = require('gulp');
-var babel = require('gulp-babel');
 var eslint = require('gulp-eslint');
 var exit = require('gulp-exit');
 var mocha = require('gulp-mocha');
@@ -11,10 +10,8 @@ var gutil = require('gulp-util');
 var spawn = require('child_process').spawn;
 
 var jsPaths = ['src/**/*.js', 'src/*.js'];
-var cliPath = ['bin-src/**/*.js'];
 var specPaths = ['src/**/*.spec.js'];
 
-gulp.task('default', ['transpile']);
 gulp.task('test', ['test-unit']);
 
 /**
@@ -41,42 +38,8 @@ gulp.task('jsdoc', function jsDoc() {
   });
 });
 
-/**
- * transpiles to es5
- */
-gulp.task('transpile', ['transpile-cli', 'transpile-src']);
-
-/**
- * transpiles the CLI entry point only
- */
-gulp.task('transpile-cli', function transpileCli() {
-  return gulp.src(cliPath)
-    .pipe(babel())
-    .pipe(gulp.dest('bin'));
-});
-
-/**
- * transpiles the main source
- */
-gulp.task('transpile-src', function transpileSrc() {
-  return gulp.src(jsPaths)
-    .pipe(plumber())
-    .pipe(babel())
-    .pipe(gulp.dest('lib'));
-});
-
-/**
- * transpiles and builds docs on change
- */
 gulp.task('watch', function watch() {
-  gulp.watch(jsPaths, ['transpile', 'jsdoc']);
-});
-
-/**
- * transpiles on change
- */
-gulp.task('watch-quick', function watchQuick() {
-  gulp.watch(jsPaths, ['transpile']);
+  gulp.watch(jsPaths, ['jsdoc']);
 });
 
 /**

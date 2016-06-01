@@ -1,6 +1,5 @@
 
 .clusternator/
-bin-src/
 coverage/
 examples/
 spec/

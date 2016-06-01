@@ -20,9 +20,6 @@ config.local.json
 # exclude lib
 lib
 
-# exclude generated "binaries"
-bin/*.js
-
 # exclude JetBrains IDE
 .idea
 
@@ -34,7 +31,7 @@ gpg-pass.txt
 clusternator.tar.gz
 bin/curl-post-json.sh
 
-# Jekyyl Site
+# Jekkyl Site
 _site
 .sass-cache
 .jekyll-metadata

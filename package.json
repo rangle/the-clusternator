@@ -4,6 +4,9 @@
   "description": "Program to deploy docker containers on cloud service platforms with minimal user input, and/or configuration",
   "main": "index.js",
   "preferGlobal": true,
+  "engines": {
+    "node": "4.4.4"
+  },
   "keywords": [
     "docker",
     "aws",
@@ -22,16 +25,14 @@
     "!win32"
   ],
   "scripts": {
-    "build": "gulp transpile",
-    "dev": "NODE_ENV=debug; DEBUG=express:*; concurrent \"nodemon ./server-init.js\" \"npm run watch\"",
+    "dev": "NODE_ENV=debug; DEBUG=express:*; nodemon ./server-init.js",
     "doc": "npm run doc-api; jekyll build -s ./docs -d ./docs/_site",
     "doc-api": "jsdoc -c ./js-doc.json",
     "doc-dev": "concurrent \"npm run doc-dev-serve\" \"npm run watch\"",
     "doc-dev-serve": "jekyll serve -s ./docs -d ./docs/_site --drafts",
     "doc-publish": "./bin/publish-docs.sh",
-    "graph": "echo 'Requires GraphViz (If it is not already installed)'; madge --exclude \"node_modules|bin-src|lib|path|spec|coverage|tmp|examples\"  --image coverage/clusternator-graph.png ./",
+    "graph": "echo 'Requires GraphViz (If it is not already installed)'; madge --exclude \"node_modules|path|spec|coverage|tmp|examples\"  --image coverage/clusternator-graph.png ./",
     "lint": "gulp lint",
-    "prepublish": "npm run doc-publish; npm run build",
     "staging": "NODE_ENV=staging; node ./server-init.js",
     "start": "node ./server-init.js",
     "test": "gulp test-unit",
@@ -56,7 +57,6 @@
     "deepmerge": "^0.2.10",
     "express": "^4.13.3",
     "express-winston": "^1.3.1",
-    "gulp-util": "^3.0.7",
     "inquirer": "^1.0.0",
     "media-typer": "^0.3.0",
     "mkdirp": "^0.5.1",
@@ -82,7 +82,6 @@
     "concurrently": "^2.1.0",
     "eslint": "^2.10.0",
     "gulp": "^3.9.0",
-    "gulp-babel": "^5.3.0",
     "gulp-eslint": "^1.0.0",
     "gulp-exit": "0.0.2",
     "gulp-istanbul": "^0.10.4",
