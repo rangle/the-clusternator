@@ -39,6 +39,7 @@ const compression = require('compression');
 const ensureAuth = require('connect-ensure-login').ensureLoggedIn;
 
 const bodyParser = require('body-parser-rawbody');
+const reaper = require('./daemons/instance-reaper');
 
 function hostInfo() {
   log.info(`Initializing Clusternator Server on ${os.hostname()}`);
@@ -106,6 +107,9 @@ function createServer(pm, config) {
        */
       bindRoutes(app, pm, dbs);
       clusternatorApi.init(app, dbs.projects);
+      
+      // start reaper @todo wire up the to HUP and/or express restart hooks
+      reaper(pm);
 
       return app;
     });

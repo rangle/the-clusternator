@@ -27,6 +27,7 @@ describe('AWS: EC2: VM-ECS (ec2 virtual machines for ECS hosting)', () => {
     tag.unTag = () => () => Q.resolve('untag');
     tag.createClusternator = () => {};
     tag.createDeployment = () => {};
+    tag.createExpires = () => {};
     tag.createName = () => {};
     tag.createProject = () => {};
     tag.createPr = () => {};

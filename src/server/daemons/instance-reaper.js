@@ -5,7 +5,8 @@
  * @module server/daemons/instanceReaper
  */
 
-const EC2_BILLING_PERIOD  = 10000 * 60 * 60;
+const DEFAULT_INTERVAL = 5 * 60 * 1000;
+const util = require('../../util');
 
 let intervalID = null;
 
@@ -20,15 +21,17 @@ function watch(pm, interval) {
   if (intervalID) {
     return stop;
   }
-  interval = interval || EC2_BILLING_PERIOD;
+  interval = interval || DEFAULT_INTERVAL;
 
   intervalID = setInterval(pm.destroyExpiredPRs, interval);
 
+  util.info('Starting to watch for expired PR\'s');
   function stop() {
     if (intervalID) {
+      util.info('Expired PR watcher no longer watching');
       clearInterval(intervalID);
       intervalID = null;
-    }
+    } 
   }
 
   return stop;

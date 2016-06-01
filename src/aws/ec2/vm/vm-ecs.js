@@ -224,7 +224,8 @@ function createPr(aws, clusterName, projectId, pr, sgId, subnetId,
     tag.createClusternator(),
     tag.createPr(pr),
     tag.createName(clusterName),
-    tag.createProject(projectId)
+    tag.createProject(projectId),
+    tag.createExpires(awsConstants.PR_EXPIRY)
   ];
 
   /**

@@ -161,10 +161,11 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam, awsEcr,
   }
 
   /**
-   * @returns {Q.Promise}
+   * @returns {Promise}
    */
   function destroyExpiredPRs() {
     const now = Date.now();
+    util.info('AWS DestroyExpiredPRs', now); 
 
     const extractKeys = R.compose(
       R.map(R.reduce((m, p) => R.assoc(p.Key, p.Value, m), {})),
@@ -184,7 +185,7 @@ function getProjectManager(ec2, ecs, awsRoute53, dynamoDB, awsIam, awsEcr,
 
     return state()
       .then((s) => s.ec2Mgr.describe()().then((d) => {
-        const keys = extractKeys(d);
+        const keys = extractKeys(d.Reservations);
         const deadPRs = extractDeadPRs(keys);
 
         return Q.all(mapDestroy(deadPRs));

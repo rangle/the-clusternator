@@ -98,4 +98,16 @@ describe('AWS: EC2: Tag', () => {
       expect(ec2.createPr('46') instanceof ec2.Ec2Tag).to.be.ok;
     });
   });
+  
+  describe('createExpiry function', () => {
+    it('should force ttl\'s to be greater than or equal to zero', () => {
+      // note this test has a threshold of ~5ms b/c of execution time
+      const then = Date.now();
+      expect(parseInt(ec2.createExpires(-23).Value, 10) >= then).to.be.ok;
+    });
+    
+    it('should return an Ec2Tag', () => {
+      expect(ec2.createExpires('46') instanceof ec2.Ec2Tag).to.be.ok;
+    });
+  });
 });

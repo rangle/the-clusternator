@@ -11,6 +11,7 @@ module.exports = {
   create: Ec2Tag,
   createClusternator,
   createDeployment,
+  createExpires,
   createName,
   createPr,
   createProject,
@@ -124,4 +125,15 @@ function createDeployment(deployment) {
  */
 function createName(name) {
   return Ec2Tag('Name', name);
+}
+
+/**
+ * @param {string} ttl
+ * @returns {Ec2Tag}
+ */
+function createExpires(ttl) {
+  let safeTTL = parseInt(ttl, 10);
+  // force a value or set to one minute
+  safeTTL = safeTTL >= 0 ? safeTTL : 600000;
+  return Ec2Tag(constants.EXPIRES_TAG, (+Date.now() + safeTTL) + '');  
 }

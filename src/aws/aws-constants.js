@@ -30,7 +30,8 @@ const EXPORTS = {
   AWS_RETRY_LIMIT: 3,
   AWS_RETRY_MULTIPLIER: 3,
   ALT_TAG: '-alt',
-  CIDR_BLOCK: '10.0.0.0/16'
+  CIDR_BLOCK: '10.0.0.0/16',
+  PR_EXPIRY: 48 * 60 * 60 * 1000  // 48 hrs
 };
 
 module.exports = util.deepFreeze(EXPORTS);
