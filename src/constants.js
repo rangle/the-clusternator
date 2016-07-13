@@ -30,6 +30,7 @@ const constants = Object.freeze({
   EXPIRES_TAG,
   PROJECT_TAG,
   PR_TAG,
+  PROMISE_API_TIMEOUT: 5 * 60 * 1000, // five minutes
   SSH_PUBLIC_PATH
 });
 

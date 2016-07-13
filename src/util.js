@@ -71,7 +71,11 @@ function info() {
  * logs a debug message(s) through winston (takes any args)
  */
 function debug() {
-  winston.debug.apply(winston, arguments);
+  const args = Array.prototype.slice.call(arguments, 0);
+  args.unshift(' [DEBUG] ');
+  if (process.env.NODE_ENV === 'debug') {
+    winston.info.apply(winston, args);
+  }
 }
 
 /**
@@ -190,8 +194,31 @@ function isFunction(fn) {
 }
 
 /**
+ * @param {function(...)} fn
+ * @param {Object} api
+ * @param {string=} message
+ * @returns {function(...)}
+ */
+function nTimeoutBindFnTo(fn, api, message) {
+  const promiseReturner = Q.nbind(fn, api);
+
+  function timeoutPromise() {
+    const args = Array.prototype.slice.call(arguments, 0);
+    const promise = promiseReturner.apply(null, args);
+    return promise.timeout(constants.PROMISE_API_TIMEOUT, message + 
+      ' timed out');
+  }
+  return timeoutPromise;
+}
+
+/**
   Shallow iterates over a given object and *assumes* all functions are node
   callback style and converts them to Promises
+ 
+  *NOTE* this function now produces promises that timeout based on the value in
+  constants.PROMISE_API_TIMEOUT.  Clusternator only uses this function to wrap
+  AWS APIs that callback within (typically) a few seconds
+ 
   @param {Object} api some collection/object of nodejs style functions
   @return {Object} a new object with promisified functions
 */
@@ -201,7 +228,7 @@ function makePromiseApi(api) {
   // wrap *all* the functions !!!
   for (attr in api)
     if (isFunction(api[attr])) {
-      promiseApi[attr] = Q.nbind(api[attr], api);
+      promiseApi[attr] = nTimeoutBindFnTo(api[attr], api, attr);
     }
   return promiseApi;
 }
