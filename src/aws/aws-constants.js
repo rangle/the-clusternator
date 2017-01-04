@@ -25,7 +25,7 @@ const EXPORTS = {
   }],
   AWS_R53_ZONE_PREFIX: '/hostedzone/',
   AWS_SSL_ID:
-    'arn:aws:iam::731670193630:server-certificate/clusternator-wildcard',
+    'arn:aws:acm:us-east-1:731670193630:certificate/30b942c9-ffc2-4902-9516-d755be8bdc92',
   AWS_RETRY_DELAY: 1500,
   AWS_RETRY_LIMIT: 3,
   AWS_RETRY_MULTIPLIER: 3,
