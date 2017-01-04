@@ -7,7 +7,7 @@ permalink: /guide/os-x/
 ## OS X Requirements
 
 - nodejs
-- gpg
+- gpg (1.4)
 - docker (optional)
 
 ## nodejs
@@ -25,11 +25,14 @@ beyond the scope of this document.
 
 ##  gpg - GNU Privacy Guard
 
-There are a number of ways to install gpg on OS X.  Brew users can simply
+There are a number of ways to install gpg on OS X.  Brew users can  (as of 2017)
 
 ```
-brew install gpg
+brew install gpg1
+sudo ln -s /usr/local/bin/gpg1 /usr/local/bin/gpg
 ```
+
+The `ln -s` above used to not be an issue but as of 2017 brew ships with gpg2 as the default and it has an entirely different symmetric encryption model.
 
 GPG can also be manually installed by [visiting macgpg][gpg]
 
