@@ -108,7 +108,7 @@ the bundle and add it to your next commit.
 If you don't like git hooks and prefer to do this manually, the commands are:
 
 ```sh
-$ clusternator make-private -p $(clusternator shared-key)
+$ clusternator make-private -p $(clusternator project shared-key)
 $ clusternator private-diff
 $ git add clusternator.tar.gz.asc
 $ git add .clusternator/.private-checksum
