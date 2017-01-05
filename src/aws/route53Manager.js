@@ -352,6 +352,18 @@ function getRoute53(route53, zoneId) {
   }
 
   /**
+   * @returns {Promise}
+   */
+  function listZoneRecords() {
+    const params = {
+      HostedZoneId: zoneId
+    };
+    return route53.listResourceRecordSets(params).then(records => {
+      return records.ResourceRecordSets;
+    });
+  }
+
+  /**
     @return {Promise<string>}
   */
   function findId() {
@@ -371,6 +383,7 @@ function getRoute53(route53, zoneId) {
 
 return {
   list,
+  listZoneRecords,
   createPRARecord,
   createPRCNameRecord,
   createDeploymentARecord,
