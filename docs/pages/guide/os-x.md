@@ -29,6 +29,9 @@ There are a number of ways to install gpg on OS X.  Brew users can  (as of 2017)
 
 ```
 brew install gpg1
+```
+
+```
 sudo ln -s /usr/local/bin/gpg1 /usr/local/bin/gpg
 ```
 
